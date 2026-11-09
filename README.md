@@ -10,7 +10,7 @@ A fruit-slicing style browser game with festival themes: slice the festive items
 - Eid: lanterns, stars, sweets, dodge the storm cloud
 - Lunar New Year: red packets, lanterns, dumplings, dodge the unlucky clock
 - Easter: painted eggs, don't hurt the bunny
-
+- 
 ## Play
 Open `index.html` in any browser. No build step, no dependencies. Works with mouse and touch.
 
