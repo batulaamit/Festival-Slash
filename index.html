@@ -228,15 +228,16 @@ addEventListener('keydown',e=>{if(e.key==='p'||e.key==='P'||e.key==='Escape')tog
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&mode==='play'&&!paused)togglePause()});
 try{muted=localStorage.getItem('dd-mute')==='1'}catch(e){}$('mt').textContent=muted?'🔇':'🔊';
 /* ---- leaderboard: set SUPA to share scores between everyone; empty = this device only ---- */
-const SUPA={url:'',key:''};
+const SUPA={url:'https://rljuhseoccvktoocwusi.supabase.co',key:'sb_publishable_tHnsWDkHPaT-0w0bqq2ANg_h85Xg0Af'};
+const SH=()=>SUPA.key.startsWith('eyJ')?{apikey:SUPA.key,Authorization:'Bearer '+SUPA.key}:{apikey:SUPA.key};
 const pn=()=>$('pname').value.trim().slice(0,12)||'Player';
 function lbLocal(k){try{return JSON.parse(localStorage.getItem('dd-lb-'+k))||[]}catch(e){return[]}}
 async function lbList(k){
-  if(SUPA.url){try{const r=await fetch(SUPA.url+'/rest/v1/scores?theme=eq.'+k+'&order=score.desc&limit=5&select=name,score',{headers:{apikey:SUPA.key,Authorization:'Bearer '+SUPA.key}});if(r.ok)return await r.json()}catch(e){}}
+  if(SUPA.url&&SUPA.key){try{const r=await fetch(SUPA.url+'/rest/v1/scores?theme=eq.'+k+'&order=score.desc&limit=5&select=name,score',{headers:SH()});if(r.ok)return await r.json()}catch(e){}}
   return lbLocal(k).slice(0,5)}
 async function lbSubmit(k,name,s){
   const a=lbLocal(k);a.push({name,score:s});a.sort((x,y)=>y.score-x.score);try{localStorage.setItem('dd-lb-'+k,JSON.stringify(a.slice(0,10)))}catch(e){}
-  if(SUPA.url){try{await fetch(SUPA.url+'/rest/v1/scores',{method:'POST',headers:{apikey:SUPA.key,Authorization:'Bearer '+SUPA.key,'Content-Type':'application/json'},body:JSON.stringify({name,theme:k,score:s})})}catch(e){}}}
+  if(SUPA.url&&SUPA.key){try{await fetch(SUPA.url+'/rest/v1/scores',{method:'POST',headers:{...SH(),'Content-Type':'application/json'},body:JSON.stringify({name,theme:k,score:s})})}catch(e){}}}
 async function showLb(){
   const k=themeKey,l=await lbList(k);if(k!==themeKey)return;
   const el=$('lb');el.replaceChildren();
